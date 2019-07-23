@@ -19,6 +19,23 @@ class ViewController: UIViewController {
         simpleGetUrlRequestWithErrorHandling()
     }
     
+    struct Contact {
+        let contactdata: String
+        
+        init(json: [String: Any]) {
+            contactdata = json["success"] as? String ?? "NOTHING"
+            let myvalue = json["success"]
+            let data = json["data"]
+            let related_objects = json["related_objects"]
+            let additional_data = json["additional_data"]
+            
+            print("MYVALUE IS: \(myvalue)")
+            print("MYDATA IS: \(data)")
+            print("RELATED_OBJECTW IS: \(related_objects)")
+            print("Additional data is: \(additional_data)")
+        }
+    }
+    
     func simpleGetUrlRequestWithErrorHandling()
     {
         let session = URLSession.shared
@@ -44,8 +61,12 @@ class ViewController: UIViewController {
             
             
             do {
-                let json = try JSONSerialization.jsonObject(with: data!, options: [])
-                print("The Response is : ",json)
+                guard let json = try JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any] else {return}
+                
+                print("The Response is : ", json)
+                
+                let contact = Contact(json: json)
+                print(contact.contactdata)
                 
             } catch {
                 print("JSON error: \(error.localizedDescription)")
